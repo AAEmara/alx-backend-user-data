@@ -2,8 +2,14 @@
 """A method that defines Basic Authentication."""
 
 from api.v1.auth.auth import Auth
+from api.v1.app import app
+from api.v1.views.users import view_all_users
 from base64 import standard_b64decode
 import binascii
+import json
+from models.user import User
+from typing import TypeVar
+import uuid
 
 
 class BasicAuth(Auth):
