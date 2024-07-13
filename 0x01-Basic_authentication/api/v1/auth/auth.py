@@ -31,13 +31,21 @@ class Auth:
         return (True)
 
     def authorization_header(self, request=None) -> str:
-        """The Authorization HEADER.
+        """Fetching the Authorization HEADER.
         Args:
             request: The request sent by the user.
         Returns:
-            None
+            None: if the request is empty of if the `Authorization` header
+            is not included in the request.
+            Authorization Header Content: if the `Authorization` header
+            is available in the request.
         """
-        return (None)
+        if request is None:
+            return (None)
+        elif "Authorization" not in request.headers:
+            return (None)
+        else:
+            return request.headers.get("Authorization")
 
     def current_user(self, request=None) -> TypeVar('User'):
         """The current user in the authentication process.
