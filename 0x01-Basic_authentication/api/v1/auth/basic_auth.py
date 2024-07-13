@@ -2,6 +2,8 @@
 """A method that defines Basic Authentication."""
 
 from api.v1.auth.auth import Auth
+from base64 import standard_b64decode
+import binascii
 
 
 class BasicAuth(Auth):
@@ -25,3 +27,19 @@ class BasicAuth(Auth):
             return (None)
 
         return authorization_header[len("Basic "):]
+
+    def decode_base64_authorization_header(
+            self,
+            base64_authorization_header: str) -> str:
+        """
+        """
+        if base64_authorization_header is None:
+            return (None)
+        elif not isinstance(base64_authorization_header, str):
+            return (None)
+        try:
+            value = standard_b64decode(base64_authorization_header)
+            return (value.decode("utf-8"))
+        except binascii.Error:
+            # The input is not a valid Base64.
+            return (None)
