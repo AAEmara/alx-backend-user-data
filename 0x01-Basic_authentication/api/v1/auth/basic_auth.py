@@ -69,3 +69,36 @@ class BasicAuth(Auth):
             return (None, None)
         values_list = decoded_base64_authorization_header.split(":")
         return (values_list[0], values_list[1])
+
+    def user_object_from_credentials(self,
+                                     user_email: str,
+                                     user_pwd: str) -> TypeVar('User'):
+        """Retrieves the User instance based on user's credentials.
+        Args:
+            user_email: User's Email.
+            user_pwd: User's Password.
+        Returns:
+            User Instance.
+        """
+        if ((user_email is None) or (not isinstance(user_email, str))):
+            return (None)
+        elif ((user_pwd is None) or (not isinstance(user_pwd, str))):
+            return (None)
+
+        with app.app_context():
+            response = view_all_users()
+            users: str = response.get_json()
+            if users:
+                for user_data in users:
+                    user = User(**user_data)
+                    user.password = user_pwd
+                    if (
+                        (user_email == user.email) and
+                        (user.is_valid_password(user_pwd))
+                       ):
+                        try:
+                            uuid.UUID(user_pwd)
+                            return (user)
+                        except ValueError:
+                            return (None)
+        return (None)
