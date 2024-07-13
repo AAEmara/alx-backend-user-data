@@ -31,7 +31,12 @@ class BasicAuth(Auth):
     def decode_base64_authorization_header(
             self,
             base64_authorization_header: str) -> str:
-        """
+        """Decoding the info. in the Authorization Header.
+        Args:
+            base64_authorization_header: The information encoded in Base64.
+        Returns:
+            None: if the info. is not a valid Base64 input or not a string.
+            Decoded Info.: if the input is a valid Base64 info.
         """
         if base64_authorization_header is None:
             return (None)
@@ -43,3 +48,24 @@ class BasicAuth(Auth):
         except binascii.Error:
             # The input is not a valid Base64.
             return (None)
+
+    def extract_user_credentials(self,
+                                 decoded_base64_authorization_header: str
+                                 ) -> (str, str):
+        """Extracting the user's credentials.
+        Args:
+            decoded_base64_authorization_header: The decoded user credentials.
+        Returns:
+            (None, None): if the info. is not a valid Base64 input,
+            or not a string, or not separated by a colon ":".
+            (Email, Password): if the info. is a valid Base64 value,
+            separated by a colon ":".
+        """
+        if decoded_base64_authorization_header is None:
+            return (None, None)
+        elif not isinstance(decoded_base64_authorization_header, str):
+            return (None, None)
+        elif ":" not in decoded_base64_authorization_header:
+            return (None, None)
+        values_list = decoded_base64_authorization_header.split(":")
+        return (values_list[0], values_list[1])
