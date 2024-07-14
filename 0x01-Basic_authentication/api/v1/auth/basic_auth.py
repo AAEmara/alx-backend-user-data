@@ -2,14 +2,12 @@
 """A method that defines Basic Authentication."""
 
 from api.v1.auth.auth import Auth
-from api.v1.app import app
 from api.v1.views.users import view_all_users
 from base64 import standard_b64decode
 import binascii
 import json
 from models.user import User
 from typing import TypeVar
-import uuid
 
 
 class BasicAuth(Auth):
@@ -51,7 +49,7 @@ class BasicAuth(Auth):
         try:
             value = standard_b64decode(base64_authorization_header)
             return (value.decode("utf-8"))
-        except binascii.Error:
+        except (binascii.Error, UnicodeDecodeError):
             # The input is not a valid Base64.
             return (None)
 
@@ -91,20 +89,29 @@ class BasicAuth(Auth):
         elif ((user_pwd is None) or (not isinstance(user_pwd, str))):
             return (None)
 
-        with app.app_context():
-            response = view_all_users()
-            users: str = response.get_json()
-            if users:
-                for user_data in users:
-                    user = User(**user_data)
-                    user.password = user_pwd
-                    if (
-                        (user_email == user.email) and
-                        (user.is_valid_password(user_pwd))
-                       ):
-                        try:
-                            uuid.UUID(user_pwd)
-                            return (user)
-                        except ValueError:
-                            return (None)
+        users = User.search({"email": user_email})
+        if users:
+            for user in users:
+                if (user.is_valid_password(user_pwd)):
+                    return (user)
+                else:
+                    return (None)
         return (None)
+
+    def current_user(self, request=None) -> TypeVar("User"):
+        """Retrieves the User instance for a request.
+        Args:
+            request: The request made by the user.
+        Return:
+            User Object.
+        """
+        auth_header = request.headers.get('Authorization')
+        base64_header = self.extract_base64_authorization_header(auth_header)
+        header_decoded = self.decode_base64_authorization_header(base64_header)
+        credentials = self.extract_user_credentials(header_decoded)
+        if credentials is None:
+            return (None)
+        email = credentials[0]
+        pwd = credentials[1]
+        user = self.user_object_from_credentials(email, pwd)
+        return (user)
