@@ -4,7 +4,7 @@
 from bcrypt import gensalt, hashpw, checkpw
 from db import DB
 from user import User
-from uuid import uuid4, UUID
+from uuid import uuid4
 
 
 def _hash_password(password: str) -> bytes:
@@ -71,12 +71,12 @@ class Auth:
             is_valid = False
         return (is_valid)
 
-    def _generate_uuid(self) -> UUID:
+    def _generate_uuid(self) -> str:
         """Generates a new UUID value.
         Args:
             NOTHING
         Returns:
             A new UUID value.
         """
-        new_uuid = uuid4()
+        new_uuid = str(uuid4())
         return (new_uuid)
