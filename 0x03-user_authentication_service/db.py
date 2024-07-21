@@ -45,7 +45,7 @@ class DB:
         self._session.commit()
         return (new_user)
 
-    def find_user_by(self, **kwargs):
+    def find_user_by(self, **kwargs) -> User:
         """Retrieves a User instance through using the given arbitrary keyword.
         Args:
             kwargs (any): An arbitrary keyword argument to search for.
