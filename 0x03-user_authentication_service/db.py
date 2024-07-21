@@ -48,7 +48,7 @@ class DB:
     def find_user_by(self, **kwargs) -> User:
         """Retrieves a User instance through using the given arbitrary keyword.
         Args:
-            kwargs (any): An arbitrary keyword argument to search for.
+            kwargs (any): An arbitrary keyword arguments to search for.
         Returns:
             The User instance found.
         """
@@ -66,3 +66,19 @@ class DB:
         except NoResultFound:
             raise(NoResultFound)
         return (user)
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Updates a User object that is found by its `user_id`.
+        Args:
+            user_id: The ID of the User instance to be updated.
+            kwargs: A set of arbitrary keywrod arguments.
+        Returns:
+            None
+        """
+        user = self.find_user_by(id=user_id)
+        for key, val in kwargs.items():
+            if not hasattr(User, key):
+                raise(ValueError)
+            user.key = val
+        self.__session.commit()
+        return (None)
