@@ -97,3 +97,19 @@ class Auth:
         except Exception:
             return (None)
         return (session_id)
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        """Retrieves the user from the given `session_id`.
+        Args:
+            session_id: It's the uuid that represents the Session's ID.
+        Returns:
+            User: if the Session ID is valid and corresponds to a user.
+            None: iff the Session ID isn't valid nor corresponds to a user.
+        """
+        if session_id is None:
+            return (None)
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return (user)
+        except Exception:
+            return (None)
