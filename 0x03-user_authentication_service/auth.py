@@ -23,6 +23,17 @@ def _hash_password(password: str) -> bytes:
     return (password_hash)
 
 
+def _generate_uuid() -> str:
+    """Generates a new UUID value.
+    Args:
+        NOTHING
+    Returns:
+        A new UUID value.
+    """
+    new_uuid = str(uuid4())
+    return (new_uuid)
+
+
 class Auth:
     """Auth class to interact with the authentication database.
     """
@@ -70,13 +81,3 @@ class Auth:
         except Exception:
             is_valid = False
         return (is_valid)
-
-    def _generate_uuid(self) -> str:
-        """Generates a new UUID value.
-        Args:
-            NOTHING
-        Returns:
-            A new UUID value.
-        """
-        new_uuid = str(uuid4())
-        return (new_uuid)
