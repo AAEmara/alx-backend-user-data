@@ -2,7 +2,7 @@
 """A module that defines a flask app."""
 
 from auth import Auth
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 
 
 AUTH = Auth()
@@ -31,6 +31,22 @@ def users():
     except ValueError as err:
         payload = {"message": "email already registered"}
         return (jsonify(payload), 400)
+
+
+@app.route("/sessions", methods=["POST"], strict_slashes=False)
+def login():
+    """Allows the user to send his credentials in order to login.
+    """
+    email = request.form.get("email")
+    password = request.form.get("password")
+    is_valid = AUTH.valid_login(email, password)
+    if not is_valid:
+        abort(401)
+    session_id = AUTH.create_session(email)
+    response = jsonify()
+    response.set_cookie("session_id", session_id)
+    payload = {"email": email, "message": "logged in"}
+    return (jsonify(payload))
 
 
 if __name__ == "__main__":
