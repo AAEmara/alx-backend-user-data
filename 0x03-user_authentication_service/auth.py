@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A module that defines authentication functions."""
 
-from bcrypt import gensalt, hashpw
+from bcrypt import gensalt, hashpw, checkpw
 from db import DB
 from user import User
 
@@ -50,3 +50,22 @@ class Auth:
             hashed_password = _hash_password(password)
             new_user = self._db.add_user(email, hashed_password)
         return (new_user)
+
+    def valid_login(self, email: str, password: str) -> bool:
+        """Validates the credentials given when a user tries to login.
+        Args:
+            email: Email of the user who is trying to login.
+            password: Password of the user who is trying to login.
+        Returns:
+            True: if the credentials are valid.
+            False: if the credentials are not valid.
+        """
+        try:
+            # Retrieving the user by email.
+            user = self._db.find_user_by(email=email)
+            # Encodes the entered password
+            password_bytes = password.encode("utf-8")
+            is_valid = checkpw(password_bytes, user.password)
+        except Exception:
+            is_valid = False
+        return (is_valid)
