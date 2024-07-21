@@ -2,7 +2,7 @@
 """A module that defines a flask app."""
 
 from auth import Auth
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, make_response
 
 
 AUTH = Auth()
@@ -43,10 +43,11 @@ def login():
     if not is_valid:
         abort(401)
     session_id = AUTH.create_session(email)
-    response = jsonify()
-    response.set_cookie("session_id", session_id)
+    user = AUTH._db.find_user_by(email=email)
     payload = {"email": email, "message": "logged in"}
-    return (jsonify(payload))
+    response = jsonify(payload)
+    response.set_cookie("session_id", session_id)
+    return (response)
 
 
 if __name__ == "__main__":
