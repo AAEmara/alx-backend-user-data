@@ -63,9 +63,9 @@ class Auth:
         try:
             # Retrieving the user by email.
             user = self._db.find_user_by(email=email)
-            # Encodes the entered password
+            # Encodes the entered passwords
             password_bytes = password.encode("utf-8")
-            is_valid = checkpw(password_bytes, user.password)
+            is_valid = checkpw(password_bytes, user.hashed_password)
         except Exception:
             is_valid = False
         return (is_valid)
