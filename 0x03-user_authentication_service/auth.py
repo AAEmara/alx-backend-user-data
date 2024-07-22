@@ -113,3 +113,17 @@ class Auth:
             return (user)
         except Exception:
             return (None)
+
+    def destroy_session(self, user_id: int) -> None:
+        """Logging out of a session.
+        Args:
+            user_id: the user's ID.
+        Returns:
+            None
+        """
+        try:
+            user = self._db.find_user_by(id=user_id)
+            del user.session_id
+            return (None)
+        except Exception:
+            return (None)
