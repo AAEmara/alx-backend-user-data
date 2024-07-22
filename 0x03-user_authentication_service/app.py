@@ -2,7 +2,7 @@
 """A module that defines a flask app."""
 
 from auth import Auth
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort, make_response, redirect
 
 
 AUTH = Auth()
@@ -58,7 +58,7 @@ def logout():
     user = AUTH.get_user_from_session_id(session_id)
     if user:
         AUTH.destroy_session(user.id)
-        welcome()  # redirected to the home or welcome page.
+        return (redirect("/", code=302))
     abort(403)
 
 
