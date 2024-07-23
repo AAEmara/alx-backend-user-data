@@ -137,9 +137,10 @@ class Auth:
         """
         try:
             user = self._db.find_user_by(email=email)
-            if user:
-                uuid_val = _generate_uuid()
-                user.reset_token = uuid_val
-                return (user.reset_token)
         except Exception:
             raise (ValueError)
+        if user:
+            uuid_val = _generate_uuid()
+            user.reset_token = uuid_val
+            self._db._session.commit()
+            return (user.reset_token)
