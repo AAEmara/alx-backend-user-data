@@ -50,7 +50,7 @@ def login():
     return (response)
 
 
-@app.route("/logout", methods=["DELETE"], strict_slashes=False)
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
 def logout():
     """Logs out of the current session.
     """
@@ -59,7 +59,7 @@ def logout():
     if user:
         AUTH.destroy_session(user.id)
         return (redirect("/", code=302))
-    return (403)
+    abort(403)
 
 
 if __name__ == "__main__":
