@@ -145,3 +145,20 @@ class Auth:
         user.reset_token = uuid_val
         self._db._session.commit()
         return (user.reset_token)
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """Updates the user's password according to the given token & password.
+        Args:
+            reset_token: A token for reseting the password.
+            password: The password to be updated.
+        Returns:
+            None
+        """
+        from sqlalchemy.orm.exc import NoResultFound
+        try:
+            user = self._db.find_user_by(reset_token=reset_token)
+        except NoResultFound:
+            raise (ValueError)
+        hashed_password = _hash_password(password)
+        user.hashed_password = hashed_password
+        user.reset_token = None
