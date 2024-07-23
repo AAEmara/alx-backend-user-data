@@ -127,3 +127,18 @@ class Auth:
             return (None)
         except Exception:
             return (None)
+
+    def get_reset_password_token(self, email: str) -> str:
+        """Allows the user to reset his password.
+        Args:
+            email: The email of the user requesting the reset password service.
+        Returns:
+            The Reset Token of the user requesting the reset password service.
+        """
+        user = self._db.find_user_by(email=email)
+        if user:
+            uuid_val = _generate_uuid()
+            user.reset_token = uuid_val
+            return (user.reset_token)
+        except Exception:
+            raise (ValueError)
