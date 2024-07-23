@@ -135,12 +135,14 @@ class Auth:
         Returns:
             The Reset Token of the user requesting the reset password service.
         """
+        from sqlalchemy.orm.exc import NoResultFound
+
         try:
             user = self._db.find_user_by(email=email)
-        except Exception:
+        except NoResultFound:
             raise (ValueError)
         if user:
             uuid_val = _generate_uuid()
             user.reset_token = uuid_val
             self._db._session.commit()
-            return (user.reset_token)
+        return (user.reset_token)
