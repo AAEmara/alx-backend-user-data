@@ -82,11 +82,10 @@ def profile():
 def get_reset_password_token():
     """Generates a reset password token for the requesting user.
     """
-    from sqlalchemy.orm.exc import NoResultFound
     email = request.form.get("email")
     try:
         reset_token = AUTH.get_reset_password_token(email)
-    except NoResultFound:
+    except ValueError:
         abort(403)
     message = {"email": email, "reset_token": reset_token}
     return (jsonify(message), 200)
