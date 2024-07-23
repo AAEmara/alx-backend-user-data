@@ -135,10 +135,11 @@ class Auth:
         Returns:
             The Reset Token of the user requesting the reset password service.
         """
-        user = self._db.find_user_by(email=email)
-        if user:
-            uuid_val = _generate_uuid()
-            user.reset_token = uuid_val
-            return (user.reset_token)
+        try:
+            user = self._db.find_user_by(email=email)
+            if user:
+                uuid_val = _generate_uuid()
+                user.reset_token = uuid_val
+                return (user.reset_token)
         except Exception:
             raise (ValueError)
