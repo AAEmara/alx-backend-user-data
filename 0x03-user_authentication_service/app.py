@@ -102,7 +102,7 @@ def update_password():
     try:
         reset_token = AUTH.get_reset_password_token(email)
         user = AUTH._db.find_user_by(email=email)
-    except ValueError, NoResultFound:
+    except (ValueError, NoResultFound):
         abort(403)
     AUTH.update_password(reset_token, new_password)
     message = {"email": email, "message": "Password updated"}
